@@ -1,0 +1,6 @@
+[Server]
+Version = 0.1
+
+[Predictor]
+ModelPath = "models/xxx.txt"  # model path
+FeatureLen = 21
