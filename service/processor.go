@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -10,6 +11,7 @@ import (
 func health(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, BaseResponse{
 		ErrCode: ERROR_OK,
+		context.Context(),
 	})
 }
 
