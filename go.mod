@@ -1,8 +1,9 @@
 module github.com/fyk1234/wheather-forcast-service
 
-go 1.19
+go 1.18
 
 require (
+	github.com/BurntSushi/toml v1.2.1
 	github.com/dmitryikh/leaves v0.0.0-20210121075304-82771f84c313
 	github.com/gin-gonic/gin v1.9.0
 )

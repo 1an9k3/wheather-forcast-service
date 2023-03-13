@@ -1,12 +1,15 @@
 package service
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	route := gin.Default()
 
+	route := gin.Default()
+	route.Use(ConfigMiddleware)
 	route.POST("/health", health)
 	route.GET("/health", health)
-	route.POST("/predict")
+	route.POST("/predict", predict)
 
 }

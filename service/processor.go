@@ -14,15 +14,30 @@ func health(ctx *gin.Context) {
 }
 
 func predict(ctx *gin.Context) {
+	var resp Response
+	var errCode int
+	// get global config
+	tmpCfg, ok := ctx.Get("config")
+	if !ok {
+		log.Println("load config error")
+		resp.ErrCode = ERROR_LOAD_CONFIG
+		errCode = http.StatusInternalServerError
+	}
+	gc := tmpCfg.(*TomlConfig)
+
 	// get json req
 	req := new(Request)
 	bytesJSONReq, _ := ctx.GetRawData()
 	err := json.Unmarshal(bytesJSONReq, req)
 	if err != nil {
-		log.Panicf("unmarshal fail:%v", err)
+		log.Printf("unmarshal fail:%v", err)
+		errCode = ERROR_LOAD_CONFIG
+		errCode = http.StatusBadRequest
 	}
 	// type validation
 	inputFea := req.feature
-	switch len(inputFea) {
+
+	if len(inputFea) != gc.Predictor.FeatureLen {
+
 	}
 }

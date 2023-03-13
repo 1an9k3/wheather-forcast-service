@@ -1,6 +1,5 @@
-[Server]
-Version = 0.1
+Version = "v0.1"
 
 [Predictor]
-ModelPath = "models/xxx.txt"  # model path
+ModelPath = "models/model_v1.txt"  # model path
 FeatureLen = 21

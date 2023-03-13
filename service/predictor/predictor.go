@@ -7,5 +7,5 @@ func InitModel() {
 }
 
 func loadModel() {
-	model, err := leaves.LGEnsembleFromFile()
+	model, err := leaves.LGEnsembleFromFile(service)
 }
