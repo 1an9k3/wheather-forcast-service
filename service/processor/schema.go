@@ -1,7 +1,7 @@
 package processor
 
 type Request struct {
-	Feature []float32 `json:"feature"`
+	Feature []float64 `json:"feature"`
 }
 
 type baseResponse struct {
@@ -10,7 +10,7 @@ type baseResponse struct {
 }
 
 type prediction struct {
-	Temperature float32 `json:"temperature"`
+	Temperature float64 `json:"temperature"`
 }
 
 type Response struct {

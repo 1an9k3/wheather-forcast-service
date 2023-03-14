@@ -1,26 +1,30 @@
 package predictor
 
 import (
-	"log"
+	"github.com/fyk1234/wheather-forcast-service/service/config"
 	"path"
 	"path/filepath"
 	"runtime"
 )
 
-func getRootPath() string {
-	var rootPath string
+func getCurrentAbsDir() string {
+	var abPath string
 	_, filename, _, ok := runtime.Caller(0)
 	if ok {
-		rootPath, err := filepath.Abs(path.Join(path.Dir(filename), "..", ".."))
-		if err != nil {
-			log.Panicf("get path fail: %v", err)
-		} else {
-			log.Printf("root path: %v", rootPath)
-		}
+		abPath = path.Dir(filename)
 	}
+	return abPath
+}
+
+func getRootPath() string {
+	var rootPath string
+	rootPath = filepath.Join(getCurrentAbsDir(), "..", "..")
 	return rootPath
 }
 
-func getModelFile() {
-
+func getModelPath() string {
+	tomlCfg := config.InitConfig()
+	var modelPath string
+	modelPath = filepath.Join(getRootPath(), tomlCfg.Predictor.ModelPath)
+	return modelPath
 }

@@ -1,8 +1,11 @@
 package config
 
 import (
+	"github.com/BurntSushi/toml"
 	"github.com/gin-gonic/gin"
+	"log"
 	"path"
+	"path/filepath"
 	"runtime"
 )
 
@@ -18,4 +21,14 @@ func getCurrentAbsDir() string {
 		abPath = path.Dir(filename)
 	}
 	return abPath
+}
+
+func InitConfig() *TomlConfig {
+	var config *TomlConfig
+	cfgPath, _ := filepath.Abs(path.Join(getCurrentAbsDir(), "../config.toml"))
+	log.Printf("config path: %v", cfgPath)
+	if _, err := toml.DecodeFile(cfgPath, &config); err != nil {
+		log.Panicf("load config fail %v", err)
+	}
+	return config
 }

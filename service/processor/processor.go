@@ -2,16 +2,36 @@ package processor
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/fyk1234/wheather-forcast-service/service/config"
+	"github.com/fyk1234/wheather-forcast-service/service/predictor"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
 func Health(ctx *gin.Context) {
-	var resp *Response
-	resp.ErrCode = ERROR_OK
-	ctx.JSON(http.StatusOK, resp)
+	var statusCode = http.StatusOK
+	var errCode = ERROR_OK
+	var msg string
+	temp, ok := ctx.Get("config")
+	tomlCfg := temp.(*config.TomlConfig)
+	if !ok {
+		msg = "load config error"
+		log.Printf(msg)
+		statusCode = http.StatusInternalServerError
+		errCode = ERROR_LOAD_CONFIG
+	} else {
+		msg = fmt.Sprintf("Weather Forcast Service [%v]", tomlCfg.Version)
+	}
+	ctx.JSON(statusCode, Response{
+		baseResponse: &baseResponse{
+			ErrCode: errCode,
+			Msg:     msg,
+		},
+		prediction: nil,
+	})
+
 }
 
 func Predict(ctx *gin.Context) {
@@ -42,9 +62,12 @@ func Predict(ctx *gin.Context) {
 		errCode = ERROR_PARAM
 		statusCode = http.StatusBadRequest
 	}
-
-	// TODO Predict
-	var temperature float32
+	model, err := predictor.LoadModel()
+	if err != nil {
+		errCode = ERROR_LOAD_MODEL
+		statusCode = http.StatusInternalServerError
+	}
+	temperature, _ := predictor.Predict(model, inputFea)
 	// return
 	var resp Response
 	resp.ErrCode = errCode
