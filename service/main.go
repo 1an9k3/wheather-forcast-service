@@ -9,6 +9,8 @@ import (
 
 func main() {
 	tomlCfg := config.InitConfig()
+	log.Printf("Weather Forcast Service [%v]", tomlCfg.Version)
+
 	route := gin.Default()
 	route.Use(config.MiddlewareConfig)
 	route.POST("/health", processor.Health)
