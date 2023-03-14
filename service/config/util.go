@@ -1,17 +1,11 @@
-package service
+package config
 
 import (
 	"github.com/BurntSushi/toml"
-	"github.com/gin-gonic/gin"
 	"log"
 )
 
-func ConfigMiddleware(c *gin.Context) {
-	c.Set("config", initConfig())
-	c.Next()
-}
-
-func initConfig() *TomlConfig {
+func InitConfig() *TomlConfig {
 	var config *TomlConfig
 	if _, err := toml.DecodeFile("config.toml", config); err != nil {
 		log.Panicf("load config fail")
