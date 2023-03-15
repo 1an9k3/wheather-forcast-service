@@ -40,9 +40,18 @@ func Predict(ctx *gin.Context) {
 	// get global config
 	tmpCfg, ok := ctx.Get("config")
 	if !ok {
-		log.Println("load config error")
+		msg := "load config error"
+		log.Println("msg")
 		errCode = ERROR_LOAD_CONFIG
 		statusCode = http.StatusInternalServerError
+		ctx.JSON(statusCode, Response{
+			baseResponse: &baseResponse{
+				ErrCode: errCode,
+				Msg:     msg,
+			},
+			prediction: nil,
+		})
+		return
 	}
 	tomlCfg := tmpCfg.(*config.TomlConfig)
 
@@ -54,6 +63,14 @@ func Predict(ctx *gin.Context) {
 		log.Printf("unmarshal fail:%v", err)
 		errCode = ERROR_PARAM
 		statusCode = http.StatusBadRequest
+		ctx.JSON(statusCode, Response{
+			baseResponse: &baseResponse{
+				ErrCode: errCode,
+				Msg:     err.Error(),
+			},
+			prediction: nil,
+		})
+		return
 	}
 	// length validation
 	inputFea := req.Feature
@@ -61,11 +78,27 @@ func Predict(ctx *gin.Context) {
 		log.Printf("error length: %v", len(inputFea))
 		errCode = ERROR_PARAM
 		statusCode = http.StatusBadRequest
+		ctx.JSON(statusCode, Response{
+			baseResponse: &baseResponse{
+				ErrCode: errCode,
+				Msg:     err.Error(),
+			},
+			prediction: nil,
+		})
+		return
 	}
 	model, err := predictor.LoadModel()
 	if err != nil {
 		errCode = ERROR_LOAD_MODEL
 		statusCode = http.StatusInternalServerError
+		ctx.JSON(statusCode, Response{
+			baseResponse: &baseResponse{
+				ErrCode: errCode,
+				Msg:     err.Error(),
+			},
+			prediction: nil,
+		})
+		return
 	}
 	temperature, _ := predictor.Predict(model, inputFea)
 	// return

@@ -4,4 +4,4 @@ Addr = ":8080"
 
 [Predictor]
 ModelPath = "models/model_v1.txt"  # model path
-FeatureLen = 21
+FeatureLen = 31

@@ -8,7 +8,7 @@ import (
 func LoadModel() (*leaves.Ensemble, error) {
 	model, err := leaves.LGEnsembleFromFile(getModelPath(), true)
 	if err != nil {
-		log.Printf("load model error %v", err)
+		log.Printf("load model error: [%v]", err)
 		return nil, err
 	}
 	return model, nil
