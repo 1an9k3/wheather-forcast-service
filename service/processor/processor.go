@@ -66,7 +66,7 @@ func Predict(ctx *gin.Context) {
 		ctx.JSON(statusCode, Response{
 			baseResponse: &baseResponse{
 				ErrCode: errCode,
-				Msg:     err.Error(),
+				Msg:     fmt.Sprintf("%v", err),
 			},
 			prediction: nil,
 		})
@@ -75,19 +75,21 @@ func Predict(ctx *gin.Context) {
 	// length validation
 	inputFea := req.Feature
 	if len(inputFea) != tomlCfg.Predictor.FeatureLen {
-		log.Printf("error length: %v", len(inputFea))
+		msg := fmt.Sprintf("error length: %v, shuold be %v", len(inputFea), tomlCfg.Predictor.FeatureLen)
+		log.Printf(msg)
 		errCode = ERROR_PARAM
 		statusCode = http.StatusBadRequest
 		ctx.JSON(statusCode, Response{
 			baseResponse: &baseResponse{
 				ErrCode: errCode,
-				Msg:     err.Error(),
+				Msg:     msg,
 			},
 			prediction: nil,
 		})
 		return
 	}
-	model, err := predictor.LoadModel()
+	p := new(predictor.TreePredictor)
+	err = p.LoadModel()
 	if err != nil {
 		errCode = ERROR_LOAD_MODEL
 		statusCode = http.StatusInternalServerError
@@ -100,12 +102,16 @@ func Predict(ctx *gin.Context) {
 		})
 		return
 	}
-	temperature, _ := predictor.Predict(model, inputFea)
+	temperature, _ := p.Predict(inputFea)
 	// return
-	var resp Response
-	resp.ErrCode = errCode
 	if statusCode == http.StatusOK {
-		resp.Temperature = temperature
 	}
-	ctx.JSON(statusCode, resp)
+	ctx.JSON(statusCode, Response{
+		baseResponse: &baseResponse{
+			ErrCode: errCode,
+			Msg:     "ok",
+		},
+		prediction: &prediction{
+			Temperature: temperature,
+		}})
 }
